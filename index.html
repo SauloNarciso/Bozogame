@@ -18,10 +18,56 @@
 <body>
 <script>
     //variáveis de jogo (canvas = ambiente, ctx = contexto)
-    var canvas, ctx, ALTURA, LARGURA, frames = 0;
+    var canvas, ctx, ALTURA, LARGURA, frames = 0, maxPulos = 3,
+
+    chao = {
+        y: 550,
+        altura: 50,
+        cor: "#ffdf70",
+
+        desenha: function() {
+            ctx.fillStyle = this.cor;
+            ctx.fillRect(0, this.y, LARGURA,this.altura);
+        }
+    },
+    
+    bloco = {
+        x: 50,
+        y: 0,
+        altura: 50,
+        largura: 50,
+        cor: "#B53638",
+        gravidade: 1.5,
+        velocidade: 0,
+        forcadopulo: 20,
+        qntpulos: 0,
+
+
+        atualiza: function(){
+            this.velocidade += this.gravidade; 
+            this.y += this.velocidade;
+
+            if(this.y > chao.y - this.altura) {
+                this.y = chao.y - this.altura;
+                this.qntpulos = 0;
+            }
+        },
+
+        pula: function() {
+            if(this.qntpulos < maxPulos) {
+                this.velocidade = - this.forcadopulo;
+                this.qntpulos++;
+            }
+        },
+
+        desenha: function() {
+            ctx.fillStyle = this.cor;
+            ctx.fillRect(this.x, this.y, this.largura, this.altura);
+        }
+    };
 
     function clique(event) {
-        alert("clicou");
+        bloco.pula();
     }
 
     function main() {
@@ -53,11 +99,16 @@
 
     function atualiza() {
         frames++;
+
+        bloco.atualiza();
     }
 
     function desenha() {
         ctx.fillStyle = "#50beff";
         ctx.fillRect(0, 0, LARGURA, ALTURA);
+
+        chao.desenha();
+        bloco.desenha();
     }
 
 
